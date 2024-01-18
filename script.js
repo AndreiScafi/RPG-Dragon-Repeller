@@ -73,6 +73,18 @@ const locations = [
         "button text": ["Go to town square", "Go to town square", "Go to town square"],
         "button functions": [goTown, goTown, goTown],
         text: 'The monster screams "Arg!" as it dies. You gain experience points and find gold.'
+    },
+    {
+        name: "lose",
+        "button text": ["REPLAY?", "REPLAY?", "REPLAY?"],
+        "button functions": [restart, restart, restart],
+        text: 'You die. ☠️'
+    },
+    {
+        name: "win",
+        "button text": ["REPLAY?", "REPLAY?", "REPLAY?"],
+        "button functions": [restart, restart, restart],
+        text: 'You defeat the dragon! YOU WIN THE GAME! 🎉'
     }
 ];
 //End of variables;
@@ -162,15 +174,20 @@ function goFight() {
 function attack() {
     text.innerText = "The " + monsters[fighting].name + " attacks.";
     text.innerText += " You attack it with your " + weapons[currentWeapon].name + ".";
-    health -= monsters[fighting].level;
+    /*  health -= monsters[fighting].level; */
+    health -= getMonsterAttackValue(monsters[fighting].level);
     monsterHealth -= weapons[currentWeapon].power + Math.floor(Math.random() * xp) + 1;
     healthText.innerText = health;
     monsterHealthText.innerText = monsterHealth;
     if (health <= 0) {
         lose();
     } else if (monsterHealth <= 0) {
-        defeatMonster();
+        fighting === 2 ? winGame() : defeatMonster();
     }
+}
+
+function getMonsterAttackValue(level) {
+    const hit = (level * 5) - (Math.floor(Math.random() * xp));
 }
 
 function dodge() {
@@ -179,6 +196,10 @@ function dodge() {
 
 function lose() {
     update(locations[5]);
+}
+
+function winGame() {
+    update(locations[6]);
 }
 
 function defeatMonster() {
